@@ -5,12 +5,29 @@ Karpathy (@karpathy). I wrote it after watching his [intro into neural nets lect
 which (watch the video and re-implementing `micrograd` with your favorite language) I can highly
 recommend.
 
-
 [1]: https://deno.land/
 [2]: https://github.com/karpathy/micrograd/
 [3]: https://youtu.be/VMj-3S1tku0
 
 ## Run tests
+
 ```
 deno test
 ```
+
+## Run a "tiny dataset" demo
+
+Demo is a tiny [dataset that Andrej used in his lecture][4]:
+
+| data       | label |
+| ---------- | ----- |
+| 2, 3, -1   | 1     |
+| 3, -1, 0.5 | -1    |
+| 0.5, 1, 1  | -1    |
+| 1, 1, -1   | 1     |
+
+```
+deno run ./demo.ts
+```
+
+[4]: https://www.youtube.com/watch?v=VMj-3S1tku0&t=6664s

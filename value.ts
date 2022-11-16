@@ -1,3 +1,4 @@
+export type Valuable = number | Value;
 export class Value {
   private backwards_ = () => {};
   public grad = 0;
@@ -7,8 +8,8 @@ export class Value {
     private operation: string = ""
   ) {}
 
-  add(other_: Value | number) {
-    const other = this.wrap(other_);
+  add(other_: Valuable) {
+    const other = Value.wrap(other_);
     const out = new Value(this.data + other.data, [this, other], "+");
     out.backwards_ = () => {
       // this is an application of the chain rule:
@@ -21,8 +22,8 @@ export class Value {
     return out;
   }
 
-  multiply(other_: Value | number) {
-    const other = this.wrap(other_);
+  multiply(other_: Valuable) {
+    const other = Value.wrap(other_);
     const out = new Value(this.data * other.data, [this, other], "*");
     out.backwards_ = () => {
       // "local derivative" of multiplication is the value of the other node
@@ -51,9 +52,14 @@ export class Value {
     return out;
   }
 
-  div(other_: Value | number) {
-    const other = this.wrap(other_);
+  div(other_: Valuable) {
+    const other = Value.wrap(other_);
     return this.multiply(other.power(-1));
+  }
+
+  subtract(other_: Valuable) {
+    const other = Value.wrap(other_);
+    return this.add(other.multiply(-1));
   }
 
   tanh() {
@@ -73,7 +79,7 @@ export class Value {
       visited.add(node);
       node.children.forEach(visit);
       stack.push(node);
-    }
+    };
     visit(this);
     this.grad = 1;
     // now compute gradients in reverse order
@@ -93,12 +99,22 @@ export class Value {
   }
 
   /**
-   * in case we get a number instead of a Value, wrap it in a Value
+   * In case we get a number instead of a Value, wrap it in a Value
    */
-  private wrap(other: Value | number) {
+  static wrap(other: Valuable) {
     if (other instanceof Value) {
       return other;
     }
     return new Value(other);
+  }
+
+  /**
+   * Sums a list of values or numbers
+   * @param values values or numbers to sum
+   * @param start optional starting value
+   * @returns a Value that is the sum of all the values
+   */
+  static sum(values: Valuable[], start: Valuable = 0) {
+    return values.reduce<Value>((a, b) => a.add(b), Value.wrap(start));
   }
 }

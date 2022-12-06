@@ -13,7 +13,11 @@ const xs = [
 // labels: expected outputs for each row in training data
 const ys = [1, -1, -1, 1];
 
-const network = new MultiLayerPerceptron(3, [4, 4, 1]);
+const network = new MultiLayerPerceptron(3, [
+  [4, "tanh"],
+  [4, "tanh"],
+  [1, "tanh"],
+]);
 
 const learningRate = 0.07;
 function evaluateLoss() {

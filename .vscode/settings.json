@@ -6,7 +6,11 @@
     "backpropagation",
     "deno",
     "Karpathy",
-    "micrograd"
+    "micrograd",
+    "mnist",
+    "relu",
+    "softmax",
+    "vectorize"
   ],
   "editor.formatOnSave": true,
   "editor.defaultFormatter": "denoland.vscode-deno"

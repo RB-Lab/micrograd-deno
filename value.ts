@@ -52,7 +52,7 @@ export class Value {
     return out;
   }
 
-  div(other_: Valuable) {
+  divide(other_: Valuable) {
     const other = Value.wrap(other_);
     return this.multiply(other.power(-1));
   }
@@ -66,6 +66,14 @@ export class Value {
     const out = new Value(Math.tanh(this.data), [this], "tanh");
     out.backwards_ = () => {
       this.grad += (1 - Math.pow(Math.tanh(this.data), 2)) * out.grad;
+    };
+    return out;
+  }
+
+  relu() {
+    const out = new Value(Math.max(0, this.data), [this], "relu");
+    out.backwards_ = () => {
+      this.grad += (this.data > 0 ? 1 : 0) * out.grad;
     };
     return out;
   }
@@ -106,6 +114,12 @@ export class Value {
       return other;
     }
     return new Value(other);
+  }
+
+  static softmax(xs: Valuable[]) {
+    const exps = xs.map((x) => Value.wrap(x).exp());
+    const sum = Value.sum(exps);
+    return exps.map((x) => x.divide(sum));
   }
 
   /**
